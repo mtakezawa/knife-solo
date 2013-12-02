@@ -165,13 +165,20 @@ class Chef
         path_s.gsub(/^(\w):/) { "/cygdrive/#{$1}" }
       end
 
+      def adjust_rsync_path_mingw(path)
+        path_s = path.to_s
+        path_s.gsub(/^(\w):/) { "/#{$1}" }
+      end
+
       def adjust_rsync_path_on_node(path)
         return adjust_rsync_path(path) if windows_node? && !mingw_node?
+        return adjust_rsync_path_mingw(path) if windows_node? && mingw_node?
         path
       end
 
       def adjust_rsync_path_on_client(path)
         return adjust_rsync_path(path) if windows_client? && !mingw_client?
+        return adjust_rsync_path_mingw(path) if windows_client? && mingw_client?
         path
       end
 
